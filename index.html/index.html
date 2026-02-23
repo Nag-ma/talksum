@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalkSum</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink:    #f06292;
+      --coral:   #ff8a80;
+      --magenta: #e91e8c;
+      --teal:    #4dd0c4;
+      --mint:    #a8e6cf;
+      --yellow:  #ffd54f;
+      --purple:  #9c6fcc;
+      --lavender:#c9a8f0;
+      --white:   #ffffff;
+      --bg:      #fff8fb;
+      --text:    #3d2c3e;
+      --gray:    #a89aad;
+      --card:    #ffffff;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: white;
+      padding: 0 20px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 16px rgba(240,98,146,0.12);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-text {
+      font-family: 'Pacifico', cursive;
+      font-size: 22px;
+      background: linear-gradient(90deg, var(--coral), var(--magenta), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .team-name-display {
+      font-size: 12px;
+      color: var(--gray);
+      font-weight: 700;
+      border-left: 2px solid var(--lavender);
+      padding-left: 10px;
+    }
+
+    .header-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    /* ===== ALERT ===== */
+    .alert-banner {
+      background: linear-gradient(90deg, var(--coral), var(--magenta));
+      color: white;
+      text-align: center;
+      padding: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      display: none;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      background: linear-gradient(135deg, #fff0f6 0%, #f3e8ff 50%, #e8f8ff 100%);
+      padding: 24px 20px 20px;
+      text-align: center;
+      border-bottom: 1px solid #f3d6e8;
+    }
+
+    .hero-date {
+      font-size: 13px;
+      color: var(--purple);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .hero-team {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .hero-team span {
+      background: linear-gradient(90deg, var(--magenta), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ===== TABS ===== */
+    .tabs {
+      display: flex;
+      background: white;
+      border-bottom: 2px solid #f3d6e8;
+      position: sticky;
+      top: 58px;
+      z-index: 100;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px 4px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      color: var(--magenta);
+      border-bottom-color: var(--magenta);
+    }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 20px 16px 90px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== SECTION TITLE ===== */
+    .section-title {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--magenta);
+      text-transform: uppercase;
+      margin: 24px 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--lavender), transparent);
+    }
+
+    /* ===== EVENT CARD ===== */
+    .event-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 3px 16px rgba(240,98,146,0.1);
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .event-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(240,98,146,0.18);
+    }
+
+    .event-date-box {
+      min-width: 52px;
+      width: 52px;
+      border-radius: 12px;
+      text-align: center;
+      padding: 8px 4px;
+      color: white;
+    }
+
+    .event-date-box.game     { background: linear-gradient(135deg, var(--coral), var(--magenta)); }
+    .event-date-box.practice { background: linear-gradient(135deg, var(--teal), var(--purple)); }
+
+    .event-date-box .month   { font-size: 10px; font-weight: 700; opacity: 0.85; }
+    .event-date-box .day     { font-size: 26px; font-weight: 900; line-height: 1; }
+    .event-date-box .weekday { font-size: 10px; font-weight: 700; }
+
+    .event-info { flex: 1; }
+    .event-info h3 { font-size: 15px; font-weight: 700; margin-bottom: 5px; }
+
+    .event-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .event-meta span {
+      font-size: 11px;
+      color: var(--gray);
+      background: var(--bg);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .badge.game     { background: #ffe0ec; color: var(--magenta); }
+    .badge.practice { background: #e0f8f6; color: #00897b; }
+
+    /* ===== CALENDAR ===== */
+    .view-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .view-btn {
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 2px solid var(--lavender);
+      background: white;
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .view-btn.active {
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      border-color: transparent;
+      color: white;
+    }
+
+    .calendar {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 3px 16px rgba(240,98,146,0.1);
+    }
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .cal-header h3 {
+      font-size: 16px;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--magenta), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cal-nav {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--purple);
+      padding: 4px 8px;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+    }
+
+    .cal-dow {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gray);
+      padding: 4px 0;
+    }
+
+    .cal-dow:first-child { color: var(--coral); }
+    .cal-dow:last-child  { color: var(--purple); }
+
+    .cal-day {
+      text-align: center;
+      font-size: 12px;
+      padding: 6px 2px;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .cal-day:hover { background: #fff0f6; }
+    .cal-day.today {
+      background: linear-gradient(135deg, var(--pink), var(--magenta));
+      color: white;
+      font-weight: 700;
+    }
+
+    .cal-day.sun { color: var(--coral); }
+    .cal-day.sat { color: var(--purple); }
+    .cal-day.other-month { color: #e0d0e8; }
+
+    .cal-day .dot {
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      margin: 2px auto 0;
+    }
+
+    .cal-day .dot.game     { background: var(--magenta); }
+    .cal-day .dot.practice { background: var(--teal); }
+
+    /* ===== NOTICE CARD ===== */
+    .notice-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 3px 14px rgba(240,98,146,0.08);
+      border-left: 4px solid var(--lavender);
+      transition: transform 0.2s;
+    }
+
+    .notice-card:hover { transform: translateY(-2px); }
+
+    .notice-card.important {
+      border-left-color: var(--magenta);
+      background: linear-gradient(135deg, #fff0f6, #fff8fb);
+    }
+
+    .notice-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+      gap: 8px;
+    }
+
+    .notice-header h4 { font-size: 14px; font-weight: 700; flex: 1; }
+
+    .notice-header .notice-date {
+      font-size: 11px;
+      color: var(--gray);
+      white-space: nowrap;
+    }
+
+    .notice-body {
+      font-size: 13px;
+      color: #5a4a5e;
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    .notice-footer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .poster-badge {
+      font-size: 11px;
+      background: linear-gradient(90deg, #fce4ec, #f3e8ff);
+      color: var(--magenta);
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+
+    /* ===== ATTENDANCE ===== */
+    .att-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 3px 14px rgba(240,98,146,0.08);
+      margin-bottom: 10px;
+    }
+
+    .att-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray);
+      margin-bottom: 12px;
+    }
+
+    .att-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .att-item {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      border-radius: 12px;
+    }
+
+    .att-item.ok     { background: #e8faf6; }
+    .att-item.maybe  { background: #fff8e6; }
+    .att-item.ng     { background: #fff0f6; }
+
+    .att-item .count {
+      font-size: 30px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .att-item.ok .count    { color: #00897b; }
+    .att-item.maybe .count { color: #f9a825; }
+    .att-item.ng .count    { color: var(--magenta); }
+
+    .att-item .label { font-size: 11px; font-weight: 700; margin-top: 4px; color: var(--gray); }
+
+    /* ===== SETTINGS MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(60,20,60,0.4);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 24px;
+      padding: 28px 24px;
+      width: 88%;
+      max-width: 360px;
+      box-shadow: 0 20px 60px rgba(200,50,150,0.2);
+      animation: popIn 0.3s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    .modal h2 {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      background: linear-gradient(90deg, var(--magenta), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .modal p { font-size: 12px; color: var(--gray); margin-bottom: 20px; }
+
+    .modal label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--purple);
+      margin-bottom: 6px;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--lavender);
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 20px;
+    }
+
+    .modal input:focus { border-color: var(--magenta); }
+
+    .modal-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-cancel {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      border: 2px solid var(--lavender);
+      background: white;
+      color: var(--purple);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    .btn-save {
+      flex: 2;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(90deg, var(--pink), var(--magenta));
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(233,30,140,0.3);
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: white;
+      border-top: 1px solid #f3d6e8;
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 14px;
+      box-shadow: 0 -4px 20px rgba(240,98,146,0.1);
+      z-index: 100;
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: var(--gray);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 10px;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .bottom-nav a.active { color: var(--magenta); }
+    .bottom-nav a .icon  { font-size: 22px; }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(12px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    .hero { animation: fadeUp 0.4s ease both; }
+  </style>
+</head>
+<body>
+
+<!-- ヘッダー -->
+<header>
+  <div class="logo-area">
+    <div class="logo-text">TalkSum</div>
+    <div class="team-name-display" id="teamNameDisplay">チーム名未設定</div>
+  </div>
+  <button class="header-btn" onclick="openSettings()" title="設定">⚙️</button>
+</header>
+
+<!-- 中止バナー（必要時 style="display:block" に変更） -->
+<div class="alert-banner" id="cancelBanner">🚨 本日の練習は雨天のため中止です</div>
+
+<!-- ヒーロー -->
+<div class="hero">
+  <div class="hero-date" id="todayDate"></div>
+  <div class="hero-team">⚾ <span id="heroTeam">チーム名</span> の連絡板</div>
+</div>
+
+<!-- タブ -->
+<div class="tabs">
+  <div class="tab active" onclick="showPage('home', this)">🏠 ホーム</div>
+  <div class="tab" onclick="showPage('schedule', this)">📅 日程</div>
+  <div class="tab" onclick="showPage('notice', this)">📢 連絡</div>
+  <div class="tab" onclick="showPage('attendance', this)">✅ 出欠</div>
+</div>
+
+<!-- コンテンツ -->
+<div class="container">
+
+  <!-- ホーム -->
+  <div id="page-home" class="page active">
+    <div class="section-title">次の予定</div>
+
+    <div class="event-card">
+      <div class="event-date-box game">
+        <div class="month">3月</div><div class="day">1</div><div class="weekday">土</div>
+      </div>
+      <div class="event-info">
+        <h3>春季練習試合</h3>
+        <div class="event-meta">
+          <span>🕘 9:00集合</span><span>📍 中央グラウンド</span><span>👕 ユニフォーム</span>
+        </div>
+      </div>
+      <span class="badge game">試合</span>
+    </div>
+
+    <div class="event-card">
+      <div class="event-date-box practice">
+        <div class="month">3月</div><div class="day">8</div><div class="weekday">土</div>
+      </div>
+      <div class="event-info">
+        <h3>通常練習</h3>
+        <div class="event-meta">
+          <span>🕘 8:30集合</span><span>📍 第二グラウンド</span>
+        </div>
+      </div>
+      <span class="badge practice">練習</span>
+    </div>
+
+    <div class="section-title">最新の連絡</div>
+
+    <div class="notice-card important">
+      <div class="notice-header">
+        <h4>📌 ユニフォームサイズ変更受付</h4>
+        <span class="notice-date">2/20</span>
+      </div>
+      <div class="notice-body">春季大会に向けてユニフォームのサイズ変更を受け付けます。3/1の練習時に担当者までお申し出ください。</div>
+      <div class="notice-footer"><span class="poster-badge">👤 田中コーチ</span></div>
+    </div>
+
+    <div class="notice-card">
+      <div class="notice-header">
+        <h4>🧹 グラウンド整備当番のお願い</h4>
+        <span class="notice-date">2/18</span>
+      </div>
+      <div class="notice-body">今月の整備当番表を更新しました。変更がある方は早めにご連絡ください。</div>
+      <div class="notice-footer"><span class="poster-badge">👤 山田さん</span></div>
+    </div>
+  </div>
+
+  <!-- 日程 -->
+  <div id="page-schedule" class="page">
+    <div class="view-toggle">
+      <button class="view-btn active" onclick="switchView('list', this)">📋 リスト</button>
+      <button class="view-btn" onclick="switchView('cal', this)">📅 カレンダー</button>
+    </div>
+
+    <div id="view-list">
+      <div class="event-card">
+        <div class="event-date-box game"><div class="month">3月</div><div class="day">1</div><div class="weekday">土</div></div>
+        <div class="event-info"><h3>春季練習試合</h3><div class="event-meta"><span>🕘 9:00集合</span><span>📍 中央グラウンド</span><span>👕 ユニフォーム</span></div></div>
+        <span class="badge game">試合</span>
+      </div>
+      <div class="event-card">
+        <div class="event-date-box practice"><div class="month">3月</div><div class="day">8</div><div class="weekday">土</div></div>
+        <div class="event-info"><h3>通常練習</h3><div class="event-meta"><span>🕘 8:30集合</span><span>📍 第二グラウンド</span></div></div>
+        <span class="badge practice">練習</span>
+      </div>
+      <div class="event-card">
+        <div class="event-date-box practice"><div class="month">3月</div><div class="day">15</div><div class="weekday">土</div></div>
+        <div class="event-info"><h3>通常練習</h3><div class="event-meta"><span>🕘 8:30集合</span><span>📍 中央グラウンド</span></div></div>
+        <span class="badge practice">練習</span>
+      </div>
+      <div class="event-card">
+        <div class="event-date-box game"><div class="month">3月</div><div class="day">22</div><div class="weekday">土</div></div>
+        <div class="event-info"><h3>春季大会 一回戦</h3><div class="event-meta"><span>🕘 10:00集合</span><span>📍 市営球場</span><span>👕 ユニフォーム</span></div></div>
+        <span class="badge game">試合</span>
+      </div>
+    </div>
+
+    <div id="view-cal" style="display:none">
+      <div class="calendar">
+        <div class="cal-header">
+          <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+          <h3 id="calTitle"></h3>
+          <button class="cal-nav" onclick="changeMonth(1)">›</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 連絡 -->
+  <div id="page-notice" class="page">
+    <div class="notice-card important">
+      <div class="notice-header"><h4>📌 ユニフォームサイズ変更受付</h4><span class="notice-date">2/20</span></div>
+      <div class="notice-body">春季大会に向けてユニフォームのサイズ変更を受け付けます。3/1の練習時に担当者までお申し出ください。</div>
+      <div class="notice-footer"><span class="poster-badge">👤 田中コーチ</span></div>
+    </div>
+    <div class="notice-card">
+      <div class="notice-header"><h4>🧹 グラウンド整備当番のお願い</h4><span class="notice-date">2/18</span></div>
+      <div class="notice-body">今月の整備当番表を更新しました。変更がある方は早めにご連絡ください。</div>
+      <div class="notice-footer"><span class="poster-badge">👤 山田さん</span></div>
+    </div>
+    <div class="notice-card">
+      <div class="notice-header"><h4>🚗 送迎当番について</h4><span class="notice-date">2/15</span></div>
+      <div class="notice-body">3月の送迎当番を調整中です。都合の悪い日がある方は2/28までにお知らせください。</div>
+      <div class="notice-footer"><span class="poster-badge">👤 鈴木さん</span></div>
+    </div>
+    <div class="notice-card">
+      <div class="notice-header"><h4>🍱 お弁当持参のお願い（3/1試合）</h4><span class="notice-date">2/12</span></div>
+      <div class="notice-body">3/1の試合は一日かかる見込みです。お弁当・飲み物を多めにご用意ください。</div>
+      <div class="notice-footer"><span class="poster-badge">👤 監督</span></div>
+    </div>
+  </div>
+
+  <!-- 出欠 -->
+  <div id="page-attendance" class="page">
+    <div class="section-title">3月1日（土）春季練習試合</div>
+    <div class="att-card">
+      <h4>⚾ 回答状況（15名中）</h4>
+      <div class="att-row">
+        <div class="att-item ok"><div class="count">10</div><div class="label">✅ 参加</div></div>
+        <div class="att-item maybe"><div class="count">2</div><div class="label">🔺 未定</div></div>
+        <div class="att-item ng"><div class="count">3</div><div class="label">❌ 欠席</div></div>
+      </div>
+    </div>
+    <div class="section-title">3月8日（土）通常練習</div>
+    <div class="att-card">
+      <h4>⚾ 回答状況（15名中）</h4>
+      <div class="att-row">
+        <div class="att-item ok"><div class="count">12</div><div class="label">✅ 参加</div></div>
+        <div class="att-item maybe"><div class="count">1</div><div class="label">🔺 未定</div></div>
+        <div class="att-item ng"><div class="count">2</div><div class="label">❌ 欠席</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ボトムナビ -->
+<nav class="bottom-nav" id="bottomNav">
+  <a class="active" data-page="home" onclick="showPageNav('home', this)"><span class="icon">🏠</span>ホーム</a>
+  <a data-page="schedule" onclick="showPageNav('schedule', this)"><span class="icon">📅</span>日程</a>
+  <a data-page="notice" onclick="showPageNav('notice', this)"><span class="icon">📢</span>連絡</a>
+  <a data-page="attendance" onclick="showPageNav('attendance', this)"><span class="icon">✅</span>出欠</a>
+</nav>
+
+<!-- 設定モーダル -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <h2>⚙️ チーム設定</h2>
+    <p>アプリに表示するチーム名を入力してください</p>
+    <label>チーム名</label>
+    <input type="text" id="teamNameInput" placeholder="例：東山ライオンズ" maxlength="20">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeSettings()">キャンセル</button>
+      <button class="btn-save" onclick="saveSettings()">💾 保存する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 日付
+  const d = new Date();
+  const dows = ['日','月','火','水','木','金','土'];
+  document.getElementById('todayDate').textContent =
+    `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日（${dows[d.getDay()]}）`;
+
+  // チーム名
+  function loadTeamName() {
+    const name = localStorage.getItem('talksum_team') || '';
+    document.getElementById('teamNameDisplay').textContent = name || 'チーム名未設定';
+    document.getElementById('heroTeam').textContent = name || 'チーム名';
+  }
+
+  function openSettings() {
+    document.getElementById('teamNameInput').value = localStorage.getItem('talksum_team') || '';
+    document.getElementById('settingsModal').classList.add('open');
+  }
+
+  function closeSettings() {
+    document.getElementById('settingsModal').classList.remove('open');
+  }
+
+  function saveSettings() {
+    const name = document.getElementById('teamNameInput').value.trim();
+    if (name) localStorage.setItem('talksum_team', name);
+    loadTeamName();
+    closeSettings();
+  }
+
+  document.getElementById('settingsModal').addEventListener('click', function(e) {
+    if (e.target === this) closeSettings();
+  });
+
+  // タブ切り替え（上タブ）
+  function showPage(id, tabEl) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    if (tabEl) tabEl.classList.add('active');
+    // ボトムナビも同期
+    document.querySelectorAll('.bottom-nav a').forEach(a => {
+      a.classList.toggle('active', a.dataset.page === id);
+    });
+  }
+
+  // ボトムナビ切り替え
+  function showPageNav(id, navEl) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('.bottom-nav a').forEach(a => a.classList.remove('active'));
+    if (navEl) navEl.classList.add('active');
+    // 上タブも同期
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      const pages = ['home','schedule','notice','attendance'];
+      t.classList.toggle('active', pages[i] === id);
+    });
+  }
+
+  // リスト/カレンダー切り替え
+  function switchView(type, btn) {
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-list').style.display = type === 'list' ? 'block' : 'none';
+    document.getElementById('view-cal').style.display  = type === 'cal'  ? 'block' : 'none';
+    if (type === 'cal') renderCalendar();
+  }
+
+  // カレンダー
+  let calYear = d.getFullYear(), calMonth = d.getMonth() + 1;
+
+  const events = {
+    [`${d.getFullYear()}-3-1`]:  'game',
+    [`${d.getFullYear()}-3-8`]:  'practice',
+    [`${d.getFullYear()}-3-15`]: 'practice',
+    [`${d.getFullYear()}-3-22`]: 'game',
+  };
+
+  function renderCalendar() {
+    document.getElementById('calTitle').textContent = `${calYear}年 ${calMonth}月`;
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    ['日','月','火','水','木','金','土'].forEach(dow => {
+      const el = document.createElement('div');
+      el.className = 'cal-dow';
+      el.textContent = dow;
+      grid.appendChild(el);
+    });
+    const first = new Date(calYear, calMonth - 1, 1).getDay();
+    const last  = new Date(calYear, calMonth, 0).getDate();
+    for (let i = 0; i < first; i++) {
+      const el = document.createElement('div');
+      el.className = 'cal-day other-month';
+      grid.appendChild(el);
+    }
+    for (let day = 1; day <= last; day++) {
+      const el  = document.createElement('div');
+      const dow = new Date(calYear, calMonth - 1, day).getDay();
+      let cls   = 'cal-day';
+      if (dow === 0) cls += ' sun';
+      if (dow === 6) cls += ' sat';
+      if (calYear === d.getFullYear() && calMonth === d.getMonth()+1 && day === d.getDate()) cls += ' today';
+      el.className = cls;
+      el.textContent = day;
+      const key = `${calYear}-${calMonth}-${day}`;
+      if (events[key]) {
+        const dot = document.createElement('span');
+        dot.className = `dot ${events[key]}`;
+        el.appendChild(dot);
+      }
+      grid.appendChild(el);
+    }
+  }
+
+  function changeMonth(dir) {
+    calMonth += dir;
+    if (calMonth > 12) { calMonth = 1;  calYear++; }
+    if (calMonth < 1)  { calMonth = 12; calYear--; }
+    renderCalendar();
+  }
+
+  loadTeamName();
+</script>
+</body>
+</html>
