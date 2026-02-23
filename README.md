@@ -1,29 +1,79 @@
-# 🎯 TalkSum - LINEトーク要約AI
+# 📣 TalkSum
 
-LINEグループトークを解析し、要約・タスク抽出・時系列整理を自動で行うモバイルアプリ
+チームの連絡事項を、かんたんにまとめて・共有できるアプリ
 
-## 🚀 Status
 
-Currently in development (Month 1/6)
 
-## ✨ Features (Planned)
+## 📌 概要
 
-- AI-powered chat summarization
-- Automatic task extraction
-- Timeline organization
-- Group member detection
-- Share from LINE (Android)
+**TalkSum**は、少年野球チームなどのスポーツチームを持つ保護者向けの連絡管理アプリです。
 
-## 🛠️ Tech Stack
+LINEやメールに散らばりがちなチームの連絡事項を一か所にまとめ、忙しいワーキングペアレンツでもサッと確認・共有できることを目的としています。
 
-- FlutterFlow (Frontend)
-- Supabase (Backend)
-- Claude API (AI)
 
-## 📄 License
+
+## 🎯 こんな課題を解決します
+
+- 「練習日程、どこに書いてあったっけ？」がなくなる
+- LINEグループの大量メッセージを遡る手間を省く
+- 当番・持ち物・集合時間をひとつの画面で確認できる
+- チームの連絡担当者の負担を軽減する
+
+
+## ✨ 主な機能
+
+| 機能 | 説明 |
+|------|------|
+| 📅 スケジュール表示 | 練習・試合の日程・場所・集合時間を一覧表示 |
+| 📢 お知らせ掲示板 | 連絡事項・持ち物・注意事項の投稿・閲覧 |
+| ✅ 出欠確認 | ○△× でかんたんに出欠を登録 |
+| 🌧️ 中止アナウンス | 「本日中止」を画面トップに目立つ形で表示 |
+| 👥 当番管理 | 誰がいつ当番かを一覧で確認 |
+
+
+## 🛠️ 使用技術
+
+- **フロントエンド**: HTML / CSS / JavaScript
+- **データ管理**: Google スプレッドシート ＋ Google Apps Script (GAS)
+- **ホスティング**: GitHub Pages（無料公開）
+- **バージョン管理**: GitHub
+
+
+## 🚀 使い方
+
+1. このリポジトリをクローンまたはダウンロード
+2. Google スプレッドシートを作成し、GAS スクリプトを設定
+3. `config.js` にスプレッドシートのURLを記入
+4. GitHub Pages でデプロイして、チームにURLを共有
+
+> ※ 詳細なセットアップ手順は今後追記予定です。
+
+## 📂 ディレクトリ構成（予定）
+
+TalkSum/
+├── index.html       # トップページ（お知らせ・スケジュール）
+├── schedule.html    # スケジュール一覧
+├── attendance.html  # 出欠確認
+├── duty.html        # 当番管理
+├── css/
+│   └── style.css
+├── js/
+│   └── main.js
+└── README.md
+
+
+## 🗓️ 開発ステータス
+
+- [x] アプリコンセプト策定
+- [ ] UI デザイン（ワイヤーフレーム）
+- [ ] HTML/CSS で画面作成
+- [ ] GitHub Pages で公開
+- [ ] Google スプレッドシート連携
+- [ ] 出欠確認機能の実装
+- [ ] 当番管理機能の実装
+
+
+
+## 📄 ライセンス
 
 MIT License
-
-
-
-⭐ Star this repo if you're interested!
